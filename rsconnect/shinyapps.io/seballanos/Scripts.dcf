@@ -1,0 +1,12 @@
+name: Scripts
+title: Scripts
+username: seballanos
+account: seballanos
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15064750
+bundleId: 10602309
+url: https://seballanos.shinyapps.io/Scripts/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

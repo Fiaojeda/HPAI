@@ -1,0 +1,34 @@
+"Date_confirmed","State","Subtype","Source","Age","Genotype","Sex","NumberOfCases","Status","Primary source","Secondary source","Note"
+"1/4/2024","Texas","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/p0401-avian-flu.html",NA,NA
+"5/23/2024","Michigan","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/s0522-human-case-h5.html",NA,NA
+"5/30/2024","Michigan","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/p0530-h5-human-case-michigan.html",NA,NA
+"7/3/2024","Colorado","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/p-0703-4th-human-case-h5.html","https://www.cidrap.umn.edu/avian-influenza-bird-flu/cdc-confirms-4th-human-case-h5n1-avian-flu-more-dairy-herds-colorado-hit",NA
+"7/14/2024","Colorado","H5","Commercial poultry","Adult",NA,NA,4,"Alive","https://www.cdc.gov/media/releases/2024/p-0715-confirm-h5.html",NA,NA
+"7/19/2024","Colorado","H5","Commercial poultry","Adult",NA,NA,2,"Alive","https://www.cdc.gov/bird-flu/spotlights/h5n1-response-07192024.html",NA,NA
+"7/25/2024","Colorado","H5","Commercial poultry","Adult",NA,NA,3,"Alive","https://www.cdc.gov/media/releases/2024/s0725-three-human-cases-of-h5-bird-flu.html",NA,NA
+"9/6/2024","Missouri","H5","Unknown","Adult",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/s0906-birdflu-case-missouri.html",NA,NA
+"10/3/2024","California","H5","Dairy cattle","Adult",NA,NA,2,"Alive","https://www.cdc.gov/media/releases/2024/s1003-birdflu-case-california.html",NA,NA
+"10/9/2024","California","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/s1009-human-case-bird-flu.html",NA,NA
+"10/10/2024","California","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.cdph.ca.gov/Programs/OPA/Pages/NR24-032.aspx",NA,NA
+"10/11/2024","California","H5","Dairy cattle","Adult",NA,"C",2,"Alive","https://www.cdph.ca.gov/Programs/OPA/Pages/NR24-033.aspx",NA,NA
+"10/18/2024","California","H5","Dairy cattle","Adult",NA,NA,7,"Alive","https://www.cdph.ca.gov/Programs/OPA/Pages/NR24-035.aspx",NA,NA
+"10/24/2024","Washington","H5","Commercial poultry","Adult",NA,NA,2,"Alive","https://doh.wa.gov/newsroom/cdc-confirms-two-human-cases-avian-influenza-franklin-co",NA,NA
+"10/29/2024","Washington","H5","Commercial poultry","Adult",NA,NA,4,"Alive","https://www.cdc.gov/bird-flu/spotlights/bird-flu-response-10-29-24.html",NA,NA
+"11/1/2024","Washington","H5","Commercial poultry","Adult",NA,NA,3,"Alive","https://providers.yakimahealthdistrict.org/2024/11/health-advisory-cdc-confirms-nine-human-cases-of-avian-influenza-in-washington-state/#:~:text=The%20Centers%20for%20Disease%20Control,on%20other%20samples%20are%20pending.",NA,NA
+"11/6/2024","Washington","H5","Commercial poultry","Adult",NA,NA,2,"Alive","https://web.archive.org/web/20250304192625/https://doh.wa.gov/you-and-your-family/illness-and-disease-z/avian-influenza","https://www.columbian.com/news/2025/jan/11/washington-reports-14-cases-of-bird-flu-in-humans-what-should-the-clark-county-know-about-avian-flu/","Not exact date, but wayback machine indicates the last update (nov 6, 2024)"
+"11/15/2024","Oregon","H5","Commercial poultry","Adult",NA,NA,1,"Alive","https://content.govdelivery.com/accounts/ORHA/bulletins/3c21d2e",NA,NA
+"11/22/2024","California","H5","Unknown","Child",NA,NA,1,"Alive","https://www.cdc.gov/media/releases/2024/p1122-h5n1-bird-flu.html","https://www.cdc.gov/bird-flu/spotlights/h5n1-response-12092024.html",NA
+"11/22/2024","California","H5","Dairy cattle","Adult",NA,NA,13,"Alive","https://www.cdph.ca.gov/Programs/OPA/Pages/NR24-037.aspx","https://web.archive.org/web/20241129001835/https://www.cdph.ca.gov/Programs/CID/DCDC/pages/Bird-Flu.aspx","NOTE from their website: Bird Flu case updates will not be published on November 29, 2024 due to the holiday. Normal reporting will resume on December 2, 2024."
+"11/24/2024","California","H5","Dairy cattle","Adult",NA,NA,2,"Alive","https://www.cdph.ca.gov/Programs/OPA/Pages/NR24-039.aspx",NA,NA
+"12/2/2024","California","H5","Dairy cattle","Adult",NA,NA,2,"Alive","https://web.archive.org/web/20241202204741/https://www.cdph.ca.gov/Programs/CID/DCDC/pages/Bird-Flu.aspx",NA,NA
+"12/4/2024","California","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://web.archive.org/web/20241202204741/https://www.cdph.ca.gov/Programs/CID/DCDC/pages/Bird-Flu.aspx",NA,NA
+"12/13/2024","California","H5","Dairy cattle","Adult",NA,NA,2,"Alive","https://web.archive.org/web/20241214012113/https://www.cdph.ca.gov/Programs/CID/DCDC/Pages/Bird-Flu.aspx",NA,NA
+"12/13/2024","Louisiana","H5","Backyard poultry","Adult","D1.1",NA,1,"Dead","https://www.cdc.gov/media/releases/2024/m1218-h5n1-flu.html",NA,NA
+"12/18/2024","Wisconsin","H5","Commercial poultry","Adult",NA,NA,1,"Alive","https://www.dhs.wisconsin.gov/news/releases/121824.htm",NA,NA
+"12/20/2024","California","H5","Dairy cattle","Adult",NA,NA,2,"Alive","https://web.archive.org/web/20241221031327/https://www.cdph.ca.gov/programs/cid/dcdc/pages/Bird-Flu.aspx",NA,NA
+"12/20/2024","Iowa","H5","Commercial poultry","Adult",NA,NA,1,"Alive","https://hhs.iowa.gov/news-release/2024-12-20/iowa-hhs-reports-first-human-case-highly-pathogenic-avian-influenza-hpai-iowa-risk-remains-very-low",NA,NA
+"12/23/2024","California","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://web.archive.org/web/20241224221054/https://www.cdph.ca.gov/Programs/CID/DCDC/Pages/Bird-Flu.aspx",NA,NA
+"12/31/2024","California","H5","Unknown","Child",NA,NA,1,"Alive","https://www.sf.gov/news--presumptive-bird-flu-case-identified-san-francisco-resident","https://www.cidrap.umn.edu/avian-influenza-bird-flu/cdc-tests-confirm-another-h5n1-case-california","This case is not really known when happened, but results were provided in 2025 (the case occurred in 2024 though). That's the reason why I included it in December 31."
+"2/10/2025","Nevada","H5","Dairy cattle","Adult",NA,NA,1,"Alive","https://www.centralnevadahd.org/press-release/",NA,NA
+"2/12/2025","Ohio","H5","Commercial poultry","Adult",NA,"Male",1,"Alive","https://odh.ohio.gov/media-center/ODH-News-Releases/ohio-reports-first-human-case-of-bird-flu-021225",NA,NA
+"2/14/2025","Wyoming","HT5","Backyard poultry","Adult",NA,"Female",1,"Alive","https://health.wyo.gov/wyomings-first-human-bird-flu-case-confirmed/",NA,NA
