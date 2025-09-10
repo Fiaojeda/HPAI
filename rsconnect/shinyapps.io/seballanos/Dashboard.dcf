@@ -5,7 +5,7 @@ account: seballanos
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14206122
-bundleId: 10716971
+bundleId: 10887560
 url: https://seballanos.shinyapps.io/Dashboard/
 version: 1
 asMultiple: FALSE
