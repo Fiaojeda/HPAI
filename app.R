@@ -9,7 +9,7 @@ rsconnect::setAccountInfo(name='seballanos',
 
 #Summary:
 
-#Package library
+#Package libraryq
 if (!require(shiny))
   install.packages("shiny")
 if (!require(plotly))
@@ -20,8 +20,13 @@ if (!require(sf))
   install.packages("sf")
 if (!require(tigris))
   install.packages("tigris")
-if (!require(hrbrthemes))
-  install.packages("hrbrthemes")
+if (!require(hrbrthemes)) {
+  tryCatch({
+    install.packages("hrbrthemes")
+  }, error = function(e) {
+    cat("hrbrthemes not available, will use alternative theme\n")
+  })
+}
 if (!require(httr))
   install.packages("httr")
 if (!require(jsonlite))
@@ -49,7 +54,25 @@ library(shinyjs)       #enhance Shiny apps with JavaScript functionality
 library(plotly)        #create interactive and animated plots
 library(leaflet)       #build interactive web maps
 library(RColorBrewer)  #generate color palettes for maps and plots
-library(hrbrthemes)    #apply clean, modern themes to ggplot2 visualizations
+# New R version: Try to load hrbrthemes, use alternative if not available
+if (require(hrbrthemes, quietly = TRUE)) {
+  library(hrbrthemes)    #apply clean, modern themes to ggplot2 visualizations
+  theme_function <- theme_ipsum
+} else {
+  cat("hrbrthemes not available, using ggplot2 default theme\n")
+  theme_function <- function() {
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_line(color = "grey90", size = 0.5),
+      panel.grid.minor = element_line(color = "grey95", size = 0.25),
+      axis.text = element_text(size = 12),
+      axis.title = element_text(size = 14, face = "bold"),
+      plot.title = element_text(size = 16, face = "bold"),
+      legend.title = element_text(size = 12, face = "bold"),
+      legend.text = element_text(size = 11)
+    )
+  }
+}
 library(sparkline)     #create sparkline mini charts for data trends
 
 #data manipulation and wrangling
@@ -794,11 +817,6 @@ navbarPage(
               style = "width: 45%; border: 0px solid #34495e; border-radius: 10px; background-color: #edf4fa;
              padding: 15px; font-size: 18px; display: flex; flex-direction: column;
              align-items: center; text-align: center;",
-              img(
-                src = "HumanIcon.png",
-                height = "75px",
-                style = "margin-bottom: 15px; height: clamp(40px, 10vw, 75px);"
-              ),
               
               div(style="font-size: clamp(10px, 4vw, 19px) !important; color: #34495e",
                 strong("Humans"),
@@ -820,13 +838,7 @@ navbarPage(
               style = "width: 45%; border: 0px solid #34495e; border-radius: 10px; background-color: #edf4fa;
              padding: 15px; font-size: 18px; display: flex; flex-direction: column;
              align-items: center; text-align: center;",
-              
-              img(
-                src = "PoultryIcon.png",
-                height = "75px",
-                style = "margin-bottom: 15px; height: clamp(40px, 10vw, 75px);"
-              ),
-              
+            
               div(style="font-size: clamp(10px, 4vw, 19px) !important; color: #34495e",
                 strong("Poultry"),
                 br(),
@@ -846,13 +858,7 @@ navbarPage(
               style = "width: 45%; border: 0px solid #34495e; border-radius: 10px; background-color: #edf4fa;
              padding: 15px; font-size: 18px; display: flex; flex-direction: column;
              align-items: center; text-align: center;",
-              
-              img(
-                src = "CattleIcon.png",
-                height = "75px",
-                style = "margin-bottom: 15px; height: clamp(40px, 10vw, 75px);"
-              ),
-              
+             
               div(style="font-size: clamp(10px, 4vw, 19px) !important; color: #34495e",
                 strong("Dairy cattle"),
                 br(),
@@ -872,12 +878,7 @@ navbarPage(
              padding: 15px; font-size: 18px; display: flex; flex-direction: column;
              align-items: center; text-align: center;",
               
-              img(
-                src = "CatIcon.png",
-                height = "75px",
-                style = "margin-bottom: 15px;  height: clamp(40px, 10vw, 75px);"
-              ),
-              
+            
               div(style="font-size: clamp(10px, 4vw, 19px) !important; color: #34495e",
                 strong("Domestic cats"),
                 br(),
@@ -897,12 +898,7 @@ navbarPage(
              padding: 15px; font-size: 18px; display: flex; flex-direction: column;
              align-items: center; text-align: center;",
               
-              img(
-                src = "WildbirdIcon.png",
-                height = "75px",
-                style = "margin-bottom: 15px;  height: clamp(40px, 10vw, 75px);"
-              ),
-              
+             
               div(style="font-size: clamp(10px, 4vw, 19px) !important; color: #34495e",
                 strong("Wild birds"),
                 br(),
@@ -914,20 +910,14 @@ navbarPage(
                 br(),
                 "Data start date: January 12, 2022",
                 br(),
-                paste("Last update: ",  "April 02, 2025")              )
+                paste("Last update: ",  wildbirds_date)              )
             ),
             
             div(
               style = "width: 45%; border: 0px solid #34495e; border-radius: 10px; background-color: #edf4fa;
              padding: 15px; font-size: 18px; display: flex; flex-direction: column;
              align-items: center; text-align: center;",
-              
-              img(
-                src = "WildmammalIcon.png",
-                height = "75px",
-                style = "margin-bottom: 15px;  height: clamp(40px, 10vw, 75px);"
-              ),
-              
+             
               div(style="font-size: clamp(10px, 4vw, 19px) !important; color: #34495e",
                 strong("Wild mammals"),
                 br(),
@@ -1240,7 +1230,7 @@ server <- function(input, output, session) {
       geom_bar(stat = "identity", fill = "#f39c12") +
       coord_flip() +
       labs(x = "", y = "Reported cases") +
-      theme_ipsum() +
+      theme_function() +
       theme(
         axis.text.x = element_text(angle = 45, hjust = 1),
         legend.spacing.y = unit(10, "pt")

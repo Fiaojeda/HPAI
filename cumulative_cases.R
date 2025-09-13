@@ -1,6 +1,25 @@
 #####================================== CUMULATIVE CASES PLOTS =====================================
 #This code generates cumulative case plots for the different categories
 
+# Define theme function (fallback if hrbrthemes not available)
+if (exists("theme_function")) {
+  # Use the theme function defined in app.R
+  theme_function <- theme_function
+} else {
+  theme_function <- function() {
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_line(color = "grey90", size = 0.5),
+      panel.grid.minor = element_line(color = "grey95", size = 0.25),
+      axis.text = element_text(size = 12),
+      axis.title = element_text(size = 14, face = "bold"),
+      plot.title = element_text(size = 16, face = "bold"),
+      legend.title = element_text(size = 12, face = "bold"),
+      legend.text = element_text(size = 11)
+    )
+  }
+}
+
 # Function to apply consistent plot styling
 apply_plot_styling <- function(p) {
   p + theme(
@@ -402,7 +421,7 @@ output$plotHumansCum <- renderPlotly({ #renders cumulative human case plot as an
       limits=c(0, max(hpai_data_humans_cum_filtered$Cumulative_Cases, na.rm=TRUE)),  
       breaks=pretty(c(0, max(hpai_data_humans_cum_filtered$Cumulative_Cases, na.rm=TRUE)), n=10)
     ) +
-    theme_ipsum() + #applies clean theme
+    theme_function() + #applies clean theme
     theme(
       axis.text.x=element_text(angle=45, hjust=1), #rotates x-axis labels
       axis.title.x=element_blank(), #removes x-axis title
@@ -572,7 +591,7 @@ output$plotPoultryCum_birds <- renderPlotly({
       breaks = pretty(c(0, max(hpai_data_poultry_cum_filtered$Cumulative_FlockSize, na.rm = TRUE) / 1e6), n = 10)  
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_poultry_cum_filtered$State))) +
-    theme_ipsum() +
+    theme_function() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
       axis.text.y = element_text(color = "black"),
@@ -742,7 +761,7 @@ output$plotPoultryCum_farms <- renderPlotly({
       breaks = pretty(c(0, max(hpai_data_poultry_cum_filtered$Cumulative_Cases, na.rm = TRUE)), n = 10)  
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_poultry_cum_filtered$State))) +
-    theme_ipsum() %>%
+    theme_function() %>%
     apply_plot_styling() 
   
   ggplotly(p, tooltip = "text") %>% 
@@ -951,7 +970,7 @@ output$plotCattleCum <- renderPlotly({
       breaks = pretty(c(0, max(hpai_data_cattle_cum_filtered$Cumulative_Cases, na.rm = TRUE)), n = 10)  
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_cattle_cum_filtered$State))) +
-    theme_ipsum() +
+    theme_function() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
       axis.text.y = element_text(color = "black"),
@@ -1125,7 +1144,7 @@ output$plotCatsCum <- renderPlotly({
       breaks = pretty(c(0, max(hpai_data_cats_cum_filtered$Cumulative_Cases, na.rm = TRUE)), n = 10)
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_cats_cum_filtered$State))) +
-    theme_ipsum() +
+    theme_function() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1),
       axis.title.x = element_blank(),
@@ -1367,7 +1386,7 @@ output$plotWildbirdsCum <- renderPlotly({
       breaks = pretty(c(0, max(hpai_data_wildbirds_cum_filtered$Cumulative_Cases, na.rm = TRUE)), n = 10)
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_wildbirds_cum_filtered$State))) +
-    theme_ipsum() +
+    theme_function() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1),
       axis.title.x = element_blank(),
@@ -1540,7 +1559,7 @@ output$plotWildmammalsCum <- renderPlotly({
       breaks = pretty(c(0, max(hpai_data_mammals_cum_filtered$Cumulative_Cases, na.rm = TRUE)), n = 10)
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_mammals_cum_filtered$State))) +
-    theme_ipsum() +
+    theme_function() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1),
       axis.title.x = element_blank(),

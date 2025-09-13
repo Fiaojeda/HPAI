@@ -194,30 +194,14 @@ sources<-list(
   #                   fetch_function=get_last_modified_cdc)
 )
 
-#extracts last modified dates for all sources
-last_modified_dates<-lapply(sources, function(source){
-  tryCatch({
-    source$fetch_function(source$url)
-  }, error = function(e) {
-    return("Connection failed")
-  })
-})
 
 #adjust update dates manually (except poultry data)
-humans_date<- as.character("March 16, 2025")
-poultry_date<- as.character("August 15 2025")
-cattle_date<- as.character("August 15, 2025")
+humans_date<- as.character("August 1, 2025")
+poultry_date<- as.character("September 11, 2025")
+cattle_date<- as.character("September 12, 2025")
 cats_date<- as.character("August 15, 2025")
-wildbirds_date<- as.character("August 15, 2025")
-wildmammals_date<- as.character("August 15, 2025")
-
-# or adjust automatically
-#humans_date<- get_file_modification_date("Human_Data.csv")
-#poultry_date<- get_file_modification_date("commercial-backyard-flocks.csv")  
-#cattle_date<- get_file_modification_date("Table Details by Date.csv")
-#cats_date<- get_file_modification_date("HPAI Detections in Mammals.csv")  # Cats data is in the mammals file
-#wildbirds_date<- get_file_modification_date("HPAI Detections in Wild Birds.csv")
-#wildmammals_date<- get_file_modification_date("HPAI Detections in Mammals.csv")
+wildbirds_date<- as.character("September 9, 2025")
+wildmammals_date<- as.character("September 3, 2025")
 
 #####================================== WILD BIRD DATA PREPARATION ========================================#####
 #Data is separated by State and County (when data allows), but right now (May 17, 2025) only 
