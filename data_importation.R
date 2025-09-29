@@ -127,7 +127,6 @@ state_populations <- data.frame(
 
 print("State population data loaded for per 100,000 calculations")
 
-
 #obtains the date in which datasets were updated (only applies to some datasets now,
 #since most are manually updated). The one for USDA is not currently being used.
 get_last_modified_usda<-function(url){ #for USDA websites
@@ -167,17 +166,6 @@ get_last_modified_cdc<-function(url){ #for CDC websites
   })
 }
 
-# Function to get file modification date
-get_file_modification_date<-function(filename){
-  if(file.exists(filename)){
-    file_info <- file.info(filename)
-    mod_date <- file_info$mtime
-    return(format(mod_date, "%B %d, %Y"))
-  } else {
-    return("File not found")
-  }
-}
-
 #URLs for USDA & CDC data sources
 sources<-list(
   #USDA_wildbirds=list(url="https://www.aphis.usda.gov/livestock-poultry-disease/avian/avian-influenza/hpai-detections/wild-birds", 
@@ -197,11 +185,11 @@ sources<-list(
 
 #adjust update dates manually (except poultry data)
 humans_date<- as.character("August 1, 2025")
-poultry_date<- as.character("September 11, 2025")
-cattle_date<- as.character("September 12, 2025")
-cats_date<- as.character("August 15, 2025")
-wildbirds_date<- as.character("September 9, 2025")
-wildmammals_date<- as.character("September 3, 2025")
+poultry_date<- as.character("September 23, 2025")
+cattle_date<- as.character("September 15, 2025")
+cats_date<- as.character("August 24, 2025")
+wildbirds_date<- as.character("September 24, 2025")
+wildmammals_date<- as.character("September 24, 2025")
 
 #####================================== WILD BIRD DATA PREPARATION ========================================#####
 #Data is separated by State and County (when data allows), but right now (May 17, 2025) only 

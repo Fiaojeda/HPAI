@@ -100,12 +100,12 @@ output$map_container <- renderUI({
     
     # Humans map
     div(id = "map_humans_container",
-        leafletOutput("map_humans", height="500px")
+        leafletOutput("map_humans", height="450px")
     ),
     
     # Poultry farms maps
     div(id = "map_poultry_farms_container", style = "display: none;",
-        leafletOutput("map_poultry_farms", height="500px"),
+        leafletOutput("map_poultry_farms", height="450px"),
         br(),
         div(
           style = "background-color: #f8f9fa; border: 1px solid #34495e; padding: 8px 12px; 
@@ -123,7 +123,7 @@ output$map_container <- renderUI({
     
     # Poultry birds maps
     div(id = "map_poultry_birds_container", style = "display: none;",
-        leafletOutput("map_poultry_birds", height="500px"),
+        leafletOutput("map_poultry_birds", height="450px"),
         br(),
         div(
           style = "background-color: #f8f9fa; border: 1px solid #34495e; padding: 8px 12px; 
@@ -141,12 +141,12 @@ output$map_container <- renderUI({
     
     # Cattle map
     div(id = "map_cattle_container", style = "display: none;",
-        leafletOutput("map_cattle", height="500px")
+        leafletOutput("map_cattle", height="450px")
     ),
     
     # Cats maps
     div(id = "map_cats_container", style = "display: none;",
-        leafletOutput("map_cats", height="500px"),
+        leafletOutput("map_cats", height="450px"),
         br(),
         div(
           style = "background-color: #f8f9fa; border: 1px solid #34495e; padding: 8px 12px; 
@@ -164,7 +164,7 @@ output$map_container <- renderUI({
     
     # Wild mammals maps
     div(id = "map_mammals_container", style = "display: none;",
-        leafletOutput("map_mammals", height="500px"),
+        leafletOutput("map_mammals", height="450px"),
         br(),
         div(
           style = "background-color: #f8f9fa; border: 1px solid #34495e; padding: 8px 12px; 
@@ -182,7 +182,7 @@ output$map_container <- renderUI({
     
     # Wild birds maps
     div(id = "map_wildbirds_container", style = "display: none;",
-        leafletOutput("map_wildbirds", height="500px"),
+        leafletOutput("map_wildbirds", height="450px"),
         br(),
         div(
           style = "background-color: #f8f9fa; border: 1px solid #34495e; padding: 8px 12px; 
@@ -516,36 +516,23 @@ update_map <- function(map_id, data, date_col, value_col = "TotalCases", is_coun
   }
 }
 
-# Initial map rendering when app starts
+# Initial map rendering - load humans map immediately when data is ready
 observe({
-  req(input$species, processed_data_cache$humans, processed_data_cache$poultry_farms, 
-      processed_data_cache$poultry_birds, processed_data_cache$cattle, 
-      processed_data_cache$cats, processed_data_cache$wildbirds, processed_data_cache$mammals)
+  req(processed_data_cache$humans, input$date)
   
-  # Wait a moment for UI to be fully rendered, then trigger initial map update
-  invalidateLater(1000)  # Wait 1 second
-  
-  # Force initial render for the selected species
-  if(input$species == "Humans") {
-    update_map("map_humans", processed_data_cache$humans, "Date_confirmed", "NumberOfCases")
-  } else if(input$species == "Dairy cattle (farms)") {
-    update_map("map_cattle", processed_data_cache$cattle, "Date")
-  }
+  # Load humans map immediately when data is available
+  update_map("map_humans", processed_data_cache$humans, "Date_confirmed", "NumberOfCases")
 })
 
 # Optimized observers - only update when species and date change
 observe({
-  req(input$species == "Humans", processed_data_cache$humans)
-  if(!is.null(input$date)) {
-    update_map("map_humans", processed_data_cache$humans, "Date_confirmed", "NumberOfCases")
-  }
+  req(input$species == "Humans", input$date, processed_data_cache$humans)
+  update_map("map_humans", processed_data_cache$humans, "Date_confirmed", "NumberOfCases")
 })
 
 observe({
-  req(input$species == "Poultry (farms)", processed_data_cache$poultry_farms)
-  if(!is.null(input$date)) {
-    update_map("map_poultry_farms", processed_data_cache$poultry_farms, "Outbreak Date")
-  }
+  req(input$species == "Poultry (farms)", input$date, processed_data_cache$poultry_farms)
+  update_map("map_poultry_farms", processed_data_cache$poultry_farms, "Outbreak Date")
 })
 
 observe({
@@ -564,10 +551,8 @@ observe({
 })
 
 observe({
-  req(input$species == "Dairy cattle (farms)", processed_data_cache$cattle)
-  if(!is.null(input$date)) {
-    update_map("map_cattle", processed_data_cache$cattle, "Date")
-  }
+  req(input$species == "Dairy cattle (farms)", input$date, processed_data_cache$cattle)
+  update_map("map_cattle", processed_data_cache$cattle, "Date")
 })
 
 observe({

@@ -282,6 +282,52 @@ ui <- fluidPage(
   height: 20px !important;
 }
 
+/* Compact slider styling */
+.irs--shiny {
+  height: 40px !important;
+  margin: 5px 0 !important;
+}
+
+.irs--shiny .irs-line {
+  height: 6px !important;
+  margin: 5px 0 !important;
+}
+
+.irs--shiny .irs-bar {
+  height: 6px !important;
+}
+
+.irs--shiny .irs-grid {
+  height: 15px !important;
+  margin-top: 5px !important;
+}
+
+.irs--shiny .irs-grid-text {
+  font-size: 12px !important;
+  margin-top: 2px !important;
+}
+
+.irs--shiny .irs-single {
+  font-size: 12px !important;
+  padding: 1px 4px !important;
+  margin-top: 2px !important;
+}
+
+.irs--shiny .irs-handle {
+  width: 18px !important;
+  height: 18px !important;
+  top: 15px !important;
+}
+
+/* Reduce form group padding */
+.form-group {
+  margin-bottom: 5px !important;
+}
+
+.shiny-input-container {
+  margin-bottom: 5px !important;
+}
+
   ")
     )
   ),
@@ -294,6 +340,16 @@ ui <- fluidPage(
       } else {
         tooltip.style.display = 'block';
       }
+    }
+    
+    function showPlotTooltip(element) {
+      var tooltip = element.parentNode.querySelector('#plot_tooltip');
+      tooltip.style.display = 'block';
+    }
+    
+    function hidePlotTooltip(element) {
+      var tooltip = element.parentNode.querySelector('#plot_tooltip');
+      tooltip.style.display = 'none';
     }
   ")),
   
@@ -317,7 +373,7 @@ navbarPage(
     div(
       style = "
         flex: 1;
-        display: flex;
+        display: flex
         justify-content: center;
         align-items: center;
         text-align: center;
@@ -376,39 +432,39 @@ navbarPage(
           column(
             10,
             div(
-              style = "border: 3px solid #34495e; padding: 10px; border-radius: 10px; 
+              style = "border: 3px solid #34495e; padding: 8px; border-radius: 10px; 
            margin: 10px; text-align: center; background-color: #edf4fa; 
            height: auto; display: flex; flex-direction: column; 
-           align-items: center; justify-content: center; gap: 10px; 
+           align-items: center; justify-content: center; gap: 5px; 
            position: relative; word-wrap: break-word; 
            overflow-wrap: break-word; white-space: normal; max-width: 100%;",
             
               
               div(
                 style = "padding: 2px; border-radius: 10px; margin: 2px; text-align: center; height: auto; 
-             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-             gap: 2px; color: #34495e; font-weight: bold; font-size: 20px; background-color: #edf4fa; 
+             display: flex; flex-direction: row; align-items: center; justify-content: center; 
+             gap: 10px; color: #34495e; font-weight: bold; font-size: 20px; background-color: #edf4fa; 
            position: relative; word-wrap: break-word; 
            overflow-wrap: break-word; white-space: normal;",
                 "Select timeframe:",
                 div(
-                  style = "font-size: clamp(10px, 4vw, 16px) !important; min-width: 110%;",
+                  style = "font-size: clamp(10px, 4vw, 16px) !important; min-width: 300px;",
                   selectInput(
                     "case_filter",
                     "",
                     choices = c("Last 15 days", "Cumulative reported cases to date"),
                     selected = "Cumulative reported cases to date",
-                    width = "110%"
+                    width = "100%"
                   )
                 )
               ),
               
               div(
-                style = "border: 0px solid #34495e; padding: 10px; border-radius: 10px; 
-             margin: 10px; text-align: center; background-color: #edf4fa; 
+                style = "border: 0px solid #34495e; padding: 5px; border-radius: 10px; 
+             margin: 5px; text-align: center; background-color: #edf4fa; 
              height: auto; display: flex; flex-direction: row; 
              align-items: center; justify-content: center; 
-             gap: 10px; position: relative; word-wrap: break-word; 
+             gap: 8px; position: relative; word-wrap: break-word; 
              overflow-wrap: break-word; white-space: normal; 
              width: 100%; max-width: 1400px; flex-wrap: wrap;",
                 
@@ -487,47 +543,53 @@ navbarPage(
               )
             ),
             div(
-              style = "padding: 0px; margin: 0px; background-color: #ffffff;
-                                     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0px; text-align: center;",
+              style = "padding: 5px; margin: 5px; background-color: #ffffff;
+                                     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; text-align: center;",
               
-              # Tooltip for HPAI case info
+              # Compact horizontal layout for tooltip, title, species dropdown, and selected date
               div(
-                style = "display: flex; align-items: center; gap: 8px; padding-top: 5px; border-radius: 10px;",
-                uiOutput("tooltip_ui"),
-                span("Cumulative Reported Cases", style = "color: #34495e; font-weight: bold; font-size: 20px;")
-              ),
-              
-              div(
-                style = "display: flex; justify-content: center; align-items: center; gap: 0px; font-size: clamp(10px, 4vw, 16px) !important; font-weight: bold;",
-                selectInput(
-                  "species",
-                  "",
-                  choices = c(
-                    "Humans",
-                    "Poultry (farms)",
-                    "Poultry (birds)",
-                    "Dairy cattle (farms)",
-                    "Domestic cats",
-                    "Wild birds",
-                    "Wild mammals"
-                  ),
-                  selected = "Humans"
+                style = "display: flex; align-items: center; justify-content: center; gap: 15px; padding: 5px; border-radius: 10px; flex-wrap: wrap;",
+                # Tooltip and title
+                div(
+                  style = "display: flex; align-items: center; gap: 8px;",
+                  uiOutput("tooltip_ui"),
+                  span("Cumulative Reported Cases", style = "color: #34495e; font-weight: bold; font-size: 20px;")
+                ),
+                
+                # Species dropdown
+                div(
+                  style = "display: flex; align-items: center; gap: 5px; font-size: clamp(10px, 4vw, 16px) !important; font-weight: bold; min-width: 200px;",
+                  selectInput(
+                    "species",
+                    "",
+                    choices = c(
+                      "Humans",
+                      "Poultry (farms)",
+                      "Poultry (birds)",
+                      "Dairy cattle (farms)",
+                      "Domestic cats",
+                      "Wild birds",
+                      "Wild mammals"
+                    ),
+                    selected = "Humans",
+                    width = "100%"
+                  )
+                ),
+                
+                # Selected date
+                div(
+                  style = "display: flex; align-items: center; justify-content: center; min-width: 200px;",
+                  div(style = "text-align: center;", uiOutput("selected_date"))
                 )
               ),
+              
               div(
-                style = "width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0px;",
+                style = "width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0px; padding: 2px 0px;",
                 div(
-                  style = "width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;",
+                  style = "width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0px;",
+                  #slider - minimal container
                   div(
-                    style = "width: 85%; display: flex; align-items: center; justify-content: center;",
-
-                    div(style = "text-align: center;", uiOutput("selected_date"))
-                    
-                  ),
-                  
-                  #slider
-                  div(
-                    style = "width: 85%;",
+                    style = "width: 90%; padding: 0px; margin: 0px;",
                     sliderInput(
                       "date",
                       "",
@@ -546,21 +608,13 @@ navbarPage(
               )
             ),
             
+            #sparkline section
+            uiOutput("sparkline_section"),
+            
             #cumulative plot
             div(style="border: 3px solid #34495e; padding: 25px; border-radius: 10px; margin: 15px; background-color: #edf4fa;
       flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; max-height: 1100px;",
                 uiOutput("plot_title", style= "padding-top: 5px; padding-bottom: 10px; border-radius: 10px; color: #34495e; font-weight: bold; font-size: 20px;"),
-                div(
-                  style = "background-color: #f8f9fa; border: 1px solid #34495e; padding: 8px 12px; 
-           border-radius: 5px; font-size: clamp(10px, 4vw, 18px); color: #34495e; font-family: Arial; 
-           margin: 10px auto; font-weight: normal; text-align: center; 
-           max-width: 1000px; display: block;",
-                  strong("Instructions: "), 
-                  "double-click on a State's name to look for reported cases in that specific State. 
-   Double-clicking on a selected state will restore the view to all States. 
-   You can select multiple States to compare reported cases. 
-   Hovering on specific points in the map will provide detailed information on the report"
-                ),
                 div(
                   style = "width: 100%; margin-top: 10px; padding: 15px;",
                   uiOutput("timeline_slider_ui")
@@ -1107,6 +1161,19 @@ server <- function(input, output, session) {
       # Return empty div when not humans to maintain layout
       div(style = "display: inline-block; width: 16px;")
     }
+  })
+  
+  # Map instructions tooltip UI
+  output$map_tooltip_ui <- renderUI({
+    HTML('<div style="display: inline-block; position: relative;"><span style="cursor: pointer; color: #007bff; 
+    font-weight: bold; font-size: 16px;" onclick="toggleMapTooltip(this)">ⓘ</span><div id="map_tooltip" style="position: absolute; 
+    bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #333; padding: 20px; border-radius: 30px; 
+    font-size: 14px; z-index: 1000; display: none; width: 90vw; max-width: 600px; min-width: 200px; white-space: normal; 
+    text-align: left; border: 2px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-bottom: 8px; 
+    word-break: break-word;"><strong>Instructions:</strong> Double-click on a State\'s name to look for reported cases in that specific State. 
+    Double-clicking on a selected state will restore the view to all States. 
+    You can select multiple States to compare reported cases. 
+    Hovering on specific points in the map will provide detailed information on the report.</div></div>')
   })
   
   

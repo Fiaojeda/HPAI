@@ -67,6 +67,191 @@ apply_plotly_layout <- function(plotly_obj, y_title = "Cumulative reported cases
   )
 }
 
+# Sparkline section UI - shows top states with trends like NYT COVID tracker
+output$sparkline_section <- renderUI({
+  req(input$species)
+  
+  if (input$species %in% c("Humans", "Poultry (farms)", "Poultry (birds)", 
+                           "Dairy cattle (farms)", "Domestic cats", 
+                           "Wild birds", "Wild mammals")) {
+    
+    div(
+      style = "border: 2px solid #34495e; padding: 20px; border-radius: 10px; margin: 15px; background-color: #f8f9fa;",
+      h4(style = "text-align: center; margin-bottom: 20px; color: #34495e; font-weight: bold;", 
+         paste("How", tolower(input$species), "cases are trending by state")),
+      div(
+        style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;",
+        div(style = "font-size: 14px; color: #666;", "Each chart shows the trend over the last 90 days"),
+        div(
+          style = "display: flex; gap: 10px;",
+          actionButton("sort_by_cases", "Sort by cases", 
+                      style = "font-size: 12px; padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px;"),
+          actionButton("sort_by_trend", "Sort by trend", 
+                      style = "font-size: 12px; padding: 5px 10px; background-color: #6c757d; color: white; border: none; border-radius: 4px;")
+        )
+      ),
+      uiOutput("sparkline_grid")
+    )
+  } else {
+    div() # Empty div for species without plots
+  }
+})
+
+# Sparkline grid output
+output$sparkline_grid <- renderUI({
+  req(input$species)
+  
+  # Get the appropriate data based on species
+  trend_data <- switch(input$species,
+    "Humans" = {
+      hpai_data_humans %>%
+        mutate(Date_confirmed = mdy(Date_confirmed)) %>%
+        group_by(State, Date_confirmed) %>%
+        summarise(
+          Cases = sum(NumberOfCases, na.rm = TRUE),
+          .groups = "drop"
+        ) %>%
+        arrange(State, Date_confirmed)
+    },
+    "Poultry (farms)" = {
+      hpai_data_poultry %>%
+        mutate(`Outbreak Date` = as.Date(`Outbreak Date`, format = "%m-%d-%Y")) %>%
+        group_by(State, `Outbreak Date`) %>%
+        summarise(
+          Cases = n(),
+          .groups = "drop"
+        ) %>%
+        rename(Date_confirmed = `Outbreak Date`) %>%
+        arrange(State, Date_confirmed)
+    },
+    "Poultry (birds)" = {
+      hpai_data_poultry %>%
+        mutate(`Outbreak Date` = as.Date(`Outbreak Date`, format = "%m-%d-%Y")) %>%
+        group_by(State, `Outbreak Date`) %>%
+        summarise(
+          Cases = sum(FlockSize, na.rm = TRUE),
+          .groups = "drop"
+        ) %>%
+        rename(Date_confirmed = `Outbreak Date`) %>%
+        arrange(State, Date_confirmed)
+    },
+    "Dairy cattle (farms)" = {
+      hpai_data_cattle_cum %>%
+        group_by(State, Date) %>%
+        summarise(
+          Cases = n(),
+          .groups = "drop"
+        ) %>%
+        rename(Date_confirmed = Date) %>%
+        arrange(State, Date_confirmed)
+    },
+    "Domestic cats" = {
+      hpai_data_mammals_cats_map %>%
+        group_by(State, `Date Detected`) %>%
+        summarise(
+          Cases = n(),
+          .groups = "drop"
+        ) %>%
+        rename(Date_confirmed = `Date Detected`) %>%
+        arrange(State, Date_confirmed)
+    },
+    "Wild birds" = {
+      hpai_data_wildbirds_map %>%
+        group_by(State, `Collection Date`) %>%
+        summarise(
+          Cases = n(),
+          .groups = "drop"
+        ) %>%
+        rename(Date_confirmed = `Collection Date`) %>%
+        arrange(State, Date_confirmed)
+    },
+    "Wild mammals" = {
+      hpai_data_mammals_mammals_map %>%
+        group_by(State, `Date Detected`) %>%
+        summarise(
+          Cases = n(),
+          .groups = "drop"
+        ) %>%
+        rename(Date_confirmed = `Date Detected`) %>%
+        arrange(State, Date_confirmed)
+    }
+  )
+  
+  if (is.null(trend_data) || nrow(trend_data) == 0) {
+    return(div(style = "text-align: center; padding: 50px;", 
+               h4("No data available for this species")))
+  }
+  
+  # Get last 90 days of data
+  max_date <- max(trend_data$Date_confirmed, na.rm = TRUE)
+  min_date <- max_date - 90
+  
+  recent_data <- trend_data %>%
+    filter(Date_confirmed >= min_date & Date_confirmed <= max_date)
+  
+  if (nrow(recent_data) == 0) {
+    return(div(style = "text-align: center; padding: 50px;", 
+               h4("No recent data available")))
+  }
+  
+  # Get top 10 states by total cases
+  state_totals <- recent_data %>%
+    group_by(State) %>%
+    summarise(
+      Total_Cases = sum(Cases, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    arrange(desc(Total_Cases)) %>%
+    head(10)
+  
+  if (nrow(state_totals) == 0) {
+    return(div(style = "text-align: center; padding: 50px;", 
+               h4("No state data available")))
+  }
+  
+  # Create sparkline charts for each state
+  sparkline_list <- list()
+  
+  for (i in 1:nrow(state_totals)) {
+    state_name <- state_totals$State[i]
+    total_cases <- state_totals$Total_Cases[i]
+    
+    # Get data for this state
+    state_data <- recent_data %>% 
+      filter(State == state_name) %>%
+      arrange(Date_confirmed)
+    
+    # Create sparkline chart
+    sparkline_chart <- create_sparkline_chart(state_data, state_name)
+    
+    # Create compact state info div
+    state_div <- div(
+      style = "display: flex; align-items: center; margin: 5px; padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 6px; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-height: 60px;",
+      div(
+        style = "flex: 1; min-width: 80px; margin-right: 10px;",
+        h6(style = "margin: 0; font-weight: bold; color: #333; font-size: 14px; line-height: 1.2;", state_name),
+        p(style = "margin: 2px 0 0 0; font-size: 12px; color: #666; line-height: 1.2;", 
+          paste("Total:", format(total_cases, big.mark = ",")))
+      ),
+      div(
+        style = "flex-shrink: 0; width: 120px; height: 40px; display: flex; align-items: center; justify-content: center;",
+        sparkline_chart
+      )
+    )
+    
+    sparkline_list[[i]] <- state_div
+  }
+  
+  # Return the complete UI in a grid layout
+  div(
+    style = "padding: 10px;",
+    div(
+      style = "display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 5px;",
+      sparkline_list
+    )
+  )
+})
+
 # Plot type selector UI
 output$plot_type_selector <- renderUI({
   req(input$species)
@@ -232,22 +417,31 @@ output$plot_title <- renderUI({
   req(input$species)  
   #titles change according to the population selected
   title_text <- if (input$species == "Humans") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in humans"
+    "Cumulative Reported Cases in Humans"
   } else if (input$species == "Poultry (farms)") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in poultry (farms)"
+    "Cumulative Reported Cases in Poultry (farms)"
   } else if (input$species == "Poultry (birds)") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in poultry (birds)"
+    "Cumulative Reported Cases in Poultry (birds)"
   } else if (input$species == "Dairy cattle (farms)") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in dairy cattle (farms)"
+    "Cumulative Reported Cases in Dairy Cattle (farms)"
   } else if (input$species == "Domestic cats") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in domestic cats"
+    "Cumulative Reported Cases in Domestic Cats"
   } else if (input$species == "Wild birds") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in wild birds"
+    "Cumulative Reported Cases in Wild Birds"
   } else if (input$species == "Wild mammals") {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases in wild mammals"
+    "Cumulative Reported Cases in Wild Mammals"
   } else {
-    "Highly Pathogenic Avian Influenza (HPAI) cumulative reported cases"
+    "Cumulative reported cases"
   }
+  
+  # Return title with tooltip icon
+  HTML(paste0(
+    '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; position: relative;">',
+    '<span style="cursor: pointer; color: #007bff; font-weight: bold; font-size: 16px; background-color: #e3f2fd; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid #007bff;" onmouseover="showPlotTooltip(this)" onmouseout="hidePlotTooltip(this)" title="Click for more information">i</span>',
+    '<span>', title_text, '</span>',
+    '<div id="plot_tooltip" style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #333; padding: 20px; border-radius: 30px; font-size: 14px; z-index: 1000; display: none; width: 90vw; max-width: 600px; min-width: 200px; white-space: normal; text-align: left; border: 2px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-bottom: 8px; word-break: break-word;"><strong>Instructions:</strong> This graph shows cumulative reported cases over time. You can interact with the graph by hovering over data points to see detailed information. Use the timeline slider below to filter the data by date range. Double-click on legend items to show/hide specific states.</div>',
+    '</div>'
+  ))
 })
 
 output$dynamic_plot <- renderUI({ #renders ui element that switches between plots or a placeholder
@@ -1607,12 +1801,20 @@ create_sparkline_chart <- function(data, state_name, color = "#ff6b6b") {
                      lineColor = color, fillColor = "transparent"))
   }
   
+  # Ensure we have at least 2 data points for a meaningful sparkline
+  if (nrow(state_data) < 2) {
+    # Duplicate the single point to create a flat line
+    cases_data <- rep(state_data$Cases, 2)
+  } else {
+    cases_data <- state_data$Cases
+  }
+  
   # Create sparkline
   sparkline(
-    state_data$Cases,
+    cases_data,
     type = "line",
-    width = 200,
-    height = 50,
+    width = 120,
+    height = 40,
     lineColor = color,
     fillColor = "rgba(255, 107, 107, 0.1)",
     lineWidth = 2,
