@@ -5,7 +5,7 @@ rsconnect::setAccountInfo(name='seballanos',
                           secret='2GuWNEjFPjuoFP8vrgsMBnduP2Y0sbNND0QKvy9O')
 
 #Cornell College of Veterinary Medicine HPAI Dashboard v0.5.
-#September, 2025. Llanos-Soto, S., Barreto-Ojeda, S., Smith, E., Gamble, A., Bento, A., Hayden, A., Travis, A.
+#October, 2025. Llanos-Soto, S., Barreto-Ojeda, S., Smith, E., Gamble, A., Bento, A., Hayden, A., Travis, A.
 
 #Summary:
 
@@ -364,9 +364,10 @@ navbarPage(
       height: 100%;
       padding: 0 25px;
     ",
-    # Logo on the left
+    # Logo on the left - clickable to go to main page
     div(
-      style = "flex-shrink: 0;",
+      style = "flex-shrink: 0; cursor: pointer;",
+      onclick = "window.location.href = window.location.origin + window.location.pathname;",
       img(src = "logo_red_carnelian.svg", height = "150px", alt = "Cornell Logo")
     ),
     # Title centered in the middle
@@ -380,7 +381,7 @@ navbarPage(
         margin: 0 20px;
       ",
       span("Highly Pathogenic Avian Influenza (HPAI) in the United States", 
-           style = "font-size: clamp(14px, 2.5vw, 18px); 
+           style = "font-size: clamp(18px, 2.5vw, 22px); 
                     font-weight: bold; 
                     color: white; 
                     line-height: 1.1; 
@@ -620,10 +621,6 @@ navbarPage(
                   uiOutput("timeline_slider_ui")
                 ),
                 div(
-                  style = "width: 100%; margin-top: 10px; padding: 15px;",
-                  uiOutput("plot_type_selector")
-                ),
-                div(
                   style = "width: 100%; height: auto; min-height: 400px; background-color: white; border-radius: 8px; padding: 20px; margin: 0; overflow: hidden;",
                   uiOutput("dynamic_plot")
                 )
@@ -647,7 +644,7 @@ navbarPage(
             h6(
               "The Cornell College of Veterinary Medicine provides this dashboard for informative and research purposes only, with no guarantees of accuracy or reliability, no liability for any resulting loss or damage, and no responsibility for third-party data included."
             ),
-            h6("v1.0 (September, 2025)")
+            h6("v1.0 (October, 2025)")
           )
         )
       )
@@ -1091,7 +1088,7 @@ navbarPage(
             h6(
               "The Cornell College of Veterinary Medicine provides this dashboard for informative and research purposes only, with no guarantees of accuracy or reliability, no liability for any resulting loss or damage, and no responsibility for third-party data included."
             ),
-            h6("v1.0 (September, 2025)")
+            h6("v1.0 (October, 2025)")
           )
         )
       )

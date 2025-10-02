@@ -185,11 +185,11 @@ sources<-list(
 
 #adjust update dates manually (except poultry data)
 humans_date<- as.character("August 1, 2025")
-poultry_date<- as.character("September 23, 2025")
+poultry_date<- as.character("September 30, 2025")
 cattle_date<- as.character("September 15, 2025")
-cats_date<- as.character("August 24, 2025")
-wildbirds_date<- as.character("September 24, 2025")
-wildmammals_date<- as.character("September 24, 2025")
+cats_date<- as.character("September 30, 2025")
+wildbirds_date<- as.character("September 30, 2025")
+wildmammals_date<- as.character("September 30, 2025")
 
 #####================================== WILD BIRD DATA PREPARATION ========================================#####
 #Data is separated by State and County (when data allows), but right now (May 17, 2025) only 

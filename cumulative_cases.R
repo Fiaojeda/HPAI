@@ -10,12 +10,14 @@ if (exists("theme_function")) {
     theme_minimal() +
     theme(
       panel.grid.major = element_line(color = "grey90", size = 0.5),
-      panel.grid.minor = element_line(color = "grey95", size = 0.25),
-      axis.text = element_text(size = 12),
-      axis.title = element_text(size = 14, face = "bold"),
-      plot.title = element_text(size = 16, face = "bold"),
-      legend.title = element_text(size = 12, face = "bold"),
-      legend.text = element_text(size = 11)
+      panel.grid.minor = element_blank(),
+      axis.text = element_text(size = 12, color = "black"),
+      axis.title = element_text(size = 14, color = "black", face = "bold"),
+      plot.title = element_text(size = 16, color = "black", face = "bold"),
+      legend.title = element_text(size = 12, color = "black", face = "bold"),
+      legend.text = element_text(size = 11, color = "black"),
+      legend.background = element_blank(),
+      legend.key = element_blank()
     )
   }
 }
@@ -79,15 +81,18 @@ output$sparkline_section <- renderUI({
       style = "border: 2px solid #34495e; padding: 20px; border-radius: 10px; margin: 15px; background-color: #f8f9fa;",
       h4(style = "text-align: center; margin-bottom: 20px; color: #34495e; font-weight: bold;", 
          paste("How", tolower(input$species), "cases are trending by state")),
+      # Add radio button selector here
       div(
-        style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;",
-        div(style = "font-size: 14px; color: #666;", "Each chart shows the trend over the last 90 days"),
-        div(
-          style = "display: flex; gap: 10px;",
-          actionButton("sort_by_cases", "Sort by cases", 
-                      style = "font-size: 12px; padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px;"),
-          actionButton("sort_by_trend", "Sort by trend", 
-                      style = "font-size: 12px; padding: 5px 10px; background-color: #6c757d; color: white; border: none; border-radius: 4px;")
+        style = "margin-bottom: 20px; text-align: center;",
+        radioButtons(
+          "plot_type",
+          "Select View:",
+          choices = c(
+            "Cumulative Cases in the last 90 days" = "cumulative",
+            "Case Trends by State all time" = "daily_trends"
+          ),
+          selected = "cumulative",
+          inline = TRUE
         )
       ),
       uiOutput("sparkline_grid")
@@ -194,7 +199,7 @@ output$sparkline_grid <- renderUI({
                h4("No recent data available")))
   }
   
-  # Get top 10 states by total cases
+  # Get top 12 states by total cases
   state_totals <- recent_data %>%
     group_by(State) %>%
     summarise(
@@ -202,7 +207,7 @@ output$sparkline_grid <- renderUI({
       .groups = "drop"
     ) %>%
     arrange(desc(Total_Cases)) %>%
-    head(10)
+    head(12)
   
   if (nrow(state_totals) == 0) {
     return(div(style = "text-align: center; padding: 50px;", 
@@ -252,31 +257,6 @@ output$sparkline_grid <- renderUI({
   )
 })
 
-# Plot type selector UI
-output$plot_type_selector <- renderUI({
-  req(input$species)
-  
-  if (input$species %in% c("Humans", "Poultry (farms)", "Poultry (birds)", 
-                           "Dairy cattle (farms)", "Domestic cats", 
-                           "Wild birds", "Wild mammals")) {
-    
-    div(
-      style = "margin-bottom: 20px; text-align: center;",
-      radioButtons(
-        "plot_type",
-        "Select View:",
-        choices = c(
-          "Cumulative Cases" = "cumulative",
-          "Case Trends by State" = "daily_trends"
-        ),
-        selected = "cumulative",
-        inline = TRUE
-      )
-    )
-  } else {
-    div() # Empty div for species without plots
-  }
-})
 
 # Timeline slider UI
 output$timeline_slider_ui <- renderUI({
@@ -437,9 +417,20 @@ output$plot_title <- renderUI({
   # Return title with tooltip icon
   HTML(paste0(
     '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; position: relative;">',
-    '<span style="cursor: pointer; color: #007bff; font-weight: bold; font-size: 16px; background-color: #e3f2fd; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid #007bff;" onmouseover="showPlotTooltip(this)" onmouseout="hidePlotTooltip(this)" title="Click for more information">i</span>',
+    '<span style="cursor: pointer; color: #007bff; font-weight: bold; font-size: 16px; background-color: #e3f2fd; 
+    border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; 
+    border: 2px solid #007bff;" onmouseover="showPlotTooltip(this)" onmouseout="hidePlotTooltip(this)" 
+    title="Click for more information">i</span>',
     '<span>', title_text, '</span>',
-    '<div id="plot_tooltip" style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #333; padding: 20px; border-radius: 30px; font-size: 14px; z-index: 1000; display: none; width: 90vw; max-width: 600px; min-width: 200px; white-space: normal; text-align: left; border: 2px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-bottom: 8px; word-break: break-word;"><strong>Instructions:</strong> This graph shows cumulative reported cases over time. You can interact with the graph by hovering over data points to see detailed information. Use the timeline slider below to filter the data by date range. Double-click on legend items to show/hide specific states.</div>',
+    '<div id="plot_tooltip" style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #333; padding: 20px; border-radius: 30px; font-size: 14px; 
+    z-index: 1000; display: none; width: 90vw; max-width: 600px; min-width: 200px; white-space: normal; text-align: left; border: 2px solid #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    margin-bottom: 8px; word-break: break-word;"><strong>Instructions:</strong> <br>
+    - This graph shows cumulative reported cases over time. You can interact with the graph by hovering over data points to see detailed information. 
+    <br>
+    - Use the timeline slider below to filter the data by date range. Double-click on legend items to show/hide specific states.
+    <br>
+    - Use zoom in/out and autoscale at the top right to adjust the y-axis range. 
+    </div>',
     '</div>'
   ))
 })
@@ -620,7 +611,7 @@ output$plotHumansCum <- renderPlotly({ #renders cumulative human case plot as an
       axis.text.x=element_text(angle=45, hjust=1), #rotates x-axis labels
       axis.title.x=element_blank(), #removes x-axis title
       panel.grid.major=element_line(color="grey90", size=0.1), #lightens major grid lines
-      panel.grid.minor=element_blank() #removes minor grid lines
+      panel.grid.minor=element_blank(), #removes minor grid lines
     ) +
     scale_color_manual(values = generate_color_palette(unique(hpai_data_humans_cum_filtered$State)))
   
@@ -634,7 +625,10 @@ output$plotHumansCum <- renderPlotly({ #renders cumulative human case plot as an
         title=list(
           text="Cumulative reported cases", #y-axis title
           font=list(size=20, family="Arial", color="black", weight="bold"),
-          standoff=20)
+          standoff=20),
+        # Enable dynamic scaling
+        autorange=TRUE,
+        fixedrange=FALSE
       ),
       title=list(font=list(size=20)),
       legend=list(
@@ -644,7 +638,75 @@ output$plotHumansCum <- renderPlotly({ #renders cumulative human case plot as an
           font=list(size=18, family="Arial", color="black", weight="bold")
         )
       )
-    )
+    ) %>%
+    # Add JavaScript for dynamic y-axis adjustment
+    htmlwidgets::onRender("
+      function(el, x) {
+        var plot = el;
+        var gd = document.getElementById(el.id);
+        
+        // Function to adjust y-axis based on visible traces
+        function adjustYAxis() {
+          var visibleTraces = [];
+          var maxValue = 0;
+          
+          // Get all traces and check which are visible
+          for (var i = 0; i < gd.data.length; i++) {
+            var trace = gd.data[i];
+            if (trace.visible !== false && trace.visible !== 'legendonly') {
+              visibleTraces.push(trace);
+              // Find max value in this trace
+              for (var j = 0; j < trace.y.length; j++) {
+                if (trace.y[j] > maxValue) {
+                  maxValue = trace.y[j];
+                }
+              }
+            }
+          }
+          
+          // Check if Total is visible
+          var totalVisible = false;
+          for (var i = 0; i < visibleTraces.length; i++) {
+            if (visibleTraces[i].name === 'Total') {
+              totalVisible = true;
+              break;
+            }
+          }
+          
+          // If Total is not visible, adjust y-axis to focus on individual states
+          if (!totalVisible && visibleTraces.length > 0) {
+            // Calculate max value excluding Total
+            var stateMaxValue = 0;
+            for (var i = 0; i < visibleTraces.length; i++) {
+              if (visibleTraces[i].name !== 'Total') {
+                for (var j = 0; j < visibleTraces[i].y.length; j++) {
+                  if (visibleTraces[i].y[j] > stateMaxValue) {
+                    stateMaxValue = visibleTraces[i].y[j];
+                  }
+                }
+              }
+            }
+            // Set y-axis range with 15% padding to prevent cutting off
+            Plotly.relayout(gd, {
+              'yaxis.range': [0, stateMaxValue * 1.15]
+            });
+          } else {
+            // Reset to full range when Total is visible
+            Plotly.relayout(gd, {
+              'yaxis.autorange': true
+            });
+          }
+        }
+        
+        // Listen for legend clicks
+        gd.on('plotly_legendclick', function(eventData) {
+          setTimeout(adjustYAxis, 100); // Small delay to allow visibility to update
+        });
+        
+        // Initial adjustment
+        setTimeout(adjustYAxis, 500);
+      }
+    ")
 })
 
 #Poultry (flocks)
@@ -1184,7 +1246,10 @@ output$plotCattleCum <- renderPlotly({
         title = list(
           text = "Cumulative reported cases",
           font = list(size = 20, family = "Arial", color = "black", weight = "bold"),
-          standoff = 20)
+          standoff = 20),
+        # Enable dynamic scaling
+        autorange = TRUE,
+        fixedrange = FALSE
       ),
       title = list(font = list(size = 20, color = "black")),
       legend = list(
@@ -1194,7 +1259,75 @@ output$plotCattleCum <- renderPlotly({
           font = list(size = 18, family = "Arial", color = "black", weight = "bold")
         )
       )
-    ) 
+    ) %>%
+    # Add JavaScript for dynamic y-axis adjustment
+    htmlwidgets::onRender("
+      function(el, x) {
+        var plot = el;
+        var gd = document.getElementById(el.id);
+        
+        // Function to adjust y-axis based on visible traces
+        function adjustYAxis() {
+          var visibleTraces = [];
+          var maxValue = 0;
+          
+          // Get all traces and check which are visible
+          for (var i = 0; i < gd.data.length; i++) {
+            var trace = gd.data[i];
+            if (trace.visible !== false && trace.visible !== 'legendonly') {
+              visibleTraces.push(trace);
+              // Find max value in this trace
+              for (var j = 0; j < trace.y.length; j++) {
+                if (trace.y[j] > maxValue) {
+                  maxValue = trace.y[j];
+                }
+              }
+            }
+          }
+          
+          // Check if Total is visible
+          var totalVisible = false;
+          for (var i = 0; i < visibleTraces.length; i++) {
+            if (visibleTraces[i].name === 'Total') {
+              totalVisible = true;
+              break;
+            }
+          }
+          
+          // If Total is not visible, adjust y-axis to focus on individual states
+          if (!totalVisible && visibleTraces.length > 0) {
+            // Calculate max value excluding Total
+            var stateMaxValue = 0;
+            for (var i = 0; i < visibleTraces.length; i++) {
+              if (visibleTraces[i].name !== 'Total') {
+                for (var j = 0; j < visibleTraces[i].y.length; j++) {
+                  if (visibleTraces[i].y[j] > stateMaxValue) {
+                    stateMaxValue = visibleTraces[i].y[j];
+                  }
+                }
+              }
+            }
+            // Set y-axis range with 15% padding to prevent cutting off
+            Plotly.relayout(gd, {
+              'yaxis.range': [0, stateMaxValue * 1.15]
+            });
+          } else {
+            // Reset to full range when Total is visible
+            Plotly.relayout(gd, {
+              'yaxis.autorange': true
+            });
+          }
+        }
+        
+        // Listen for legend clicks
+        gd.on('plotly_legendclick', function(eventData) {
+          setTimeout(adjustYAxis, 100); // Small delay to allow visibility to update
+        });
+        
+        // Initial adjustment
+        setTimeout(adjustYAxis, 500);
+      }
+    ")
 })
 
 hpai_data_cats_cum <- hpai_data_mammals_cats_cum %>%
@@ -1356,7 +1489,10 @@ output$plotCatsCum <- renderPlotly({
         title = list(
           text = "Cumulative reported cases",
           font = list(size = 20, family = "Arial", color = "black", weight = "bold"),
-          standoff = 20)
+          standoff = 20),
+        # Enable dynamic scaling
+        autorange = TRUE,
+        fixedrange = FALSE
       ),
       title = list(font = list(size = 20)),
       legend = list(
@@ -1366,7 +1502,75 @@ output$plotCatsCum <- renderPlotly({
           font = list(size = 18, family = "Arial", color = "black", weight = "bold")
         )
       )
-    ) 
+    ) %>%
+    # Add JavaScript for dynamic y-axis adjustment
+    htmlwidgets::onRender("
+      function(el, x) {
+        var plot = el;
+        var gd = document.getElementById(el.id);
+        
+        // Function to adjust y-axis based on visible traces
+        function adjustYAxis() {
+          var visibleTraces = [];
+          var maxValue = 0;
+          
+          // Get all traces and check which are visible
+          for (var i = 0; i < gd.data.length; i++) {
+            var trace = gd.data[i];
+            if (trace.visible !== false && trace.visible !== 'legendonly') {
+              visibleTraces.push(trace);
+              // Find max value in this trace
+              for (var j = 0; j < trace.y.length; j++) {
+                if (trace.y[j] > maxValue) {
+                  maxValue = trace.y[j];
+                }
+              }
+            }
+          }
+          
+          // Check if Total is visible
+          var totalVisible = false;
+          for (var i = 0; i < visibleTraces.length; i++) {
+            if (visibleTraces[i].name === 'Total') {
+              totalVisible = true;
+              break;
+            }
+          }
+          
+          // If Total is not visible, adjust y-axis to focus on individual states
+          if (!totalVisible && visibleTraces.length > 0) {
+            // Calculate max value excluding Total
+            var stateMaxValue = 0;
+            for (var i = 0; i < visibleTraces.length; i++) {
+              if (visibleTraces[i].name !== 'Total') {
+                for (var j = 0; j < visibleTraces[i].y.length; j++) {
+                  if (visibleTraces[i].y[j] > stateMaxValue) {
+                    stateMaxValue = visibleTraces[i].y[j];
+                  }
+                }
+              }
+            }
+            // Set y-axis range with 15% padding to prevent cutting off
+            Plotly.relayout(gd, {
+              'yaxis.range': [0, stateMaxValue * 1.15]
+            });
+          } else {
+            // Reset to full range when Total is visible
+            Plotly.relayout(gd, {
+              'yaxis.autorange': true
+            });
+          }
+        }
+        
+        // Listen for legend clicks
+        gd.on('plotly_legendclick', function(eventData) {
+          setTimeout(adjustYAxis, 100); // Small delay to allow visibility to update
+        });
+        
+        // Initial adjustment
+        setTimeout(adjustYAxis, 500);
+      }
+    ")
 })
 
 
